@@ -1,0 +1,66 @@
+@mixin title {
+	font-family: $titleFont;
+	font-size: clamp(3rem, 5vw, 7rem);
+}
+
+@mixin sub-title {
+	font-family: $titleFont;
+	font-size: clamp(2rem, 3vw, 5rem);
+}
+
+@mixin flexCentred {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin debug {
+	border: 0.5px solid red;
+	display: block;
+	background: rgba(255, 192, 192, 0.5);
+	& > * {
+		border: 0.5px solid #ff0000;
+		display: block;
+		background: rgba(255, 192, 192, 0.5);
+	}
+}
+
+@mixin respond-above($breakpoint) {
+	@if map-has-key($breakpoints, $breakpoint) {
+		$breakpoint-value: map-get($breakpoints, $breakpoint);
+		@media (min-width: $breakpoint-value) {
+			@content;
+		}
+	} @else {
+		@warn 'Invalid breakpoint: #{$breakpoint}.';
+	}
+}
+
+@mixin respond-below($breakpoint) {
+	@if map-has-key($breakpoints, $breakpoint) {
+		$breakpoint-value: map-get($breakpoints, $breakpoint);
+		@media (max-width: ($breakpoint-value - 1)) {
+			@content;
+		}
+	} @else {
+		@warn 'Invalid breakpoint: #{$breakpoint}.';
+	}
+}
+
+@mixin respond-between($lower, $upper) {
+	@if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+		$lower-breakpoint: map-get($breakpoints, $lower);
+		$upper-breakpoint: map-get($breakpoints, $upper);
+		@media (min-width: $lower-breakpoint) and (max-width: ($upper-breakpoint - 1)) {
+			@content;
+		}
+	} @else {
+		@if (map-has-key($breakpoints, $lower) == false) {
+			@warn 'Your lower breakpoint was invalid: #{$lower}.';
+		}
+		@if (map-has-key($breakpoints, $upper) == false) {
+			@warn 'Your upper breakpoint was invalid: #{$upper}.';
+		}
+	}
+}
+
